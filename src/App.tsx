@@ -11,6 +11,7 @@ function App() {
   const [thoughtStep, setThoughtStep] = useState(0);
   const [bridgeStep, setBridgeStep] = useState(0);
   const [isNavigating, setIsNavigating] = useState(false);
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
 
   const idleMusicRef = useRef<HTMLAudioElement>(null);
   const bloomMusicRef = useRef<HTMLAudioElement>(null);
@@ -30,6 +31,38 @@ function App() {
   ];
 
   const handleGlobalClick = () => {
+    console.log('Global click. Unlocked:', audioUnlocked, 'Phase:', phase);
+    if (!audioUnlocked) {
+      [idleMusicRef, bloomMusicRef].forEach(ref => {
+        if (ref.current) {
+          // Set initial volumes
+          if (ref === idleMusicRef) ref.current.volume = 0.3;
+          if (ref === bloomMusicRef) ref.current.volume = 0;
+
+          console.log(`Attempting to play: ${ref.current.currentSrc || ref.current.src}`);
+          ref.current.play().then(() => {
+            console.log('Successfully played:', ref.current?.src);
+            if (ref === bloomMusicRef || phase !== 'opening') {
+              ref.current?.pause();
+            }
+          }).catch(err => {
+            console.error('Play failed:', err);
+          });
+        }
+      });
+      setAudioUnlocked(true);
+
+      // If we are in opening phase, the first click should also kick off the transition
+      if (phase === 'opening') {
+        setIsNavigating(true);
+        setTimeout(() => {
+          setPhase('thoughts');
+          setIsNavigating(false);
+        }, 1000);
+      }
+      return;
+    }
+
     if (phase === 'opening') {
       if (idleMusicRef.current) {
         idleMusicRef.current.volume = 0.3;
@@ -71,6 +104,22 @@ function App() {
 
   const startGardenSequence = () => {
     setStarted(true);
+
+    // Fade out idle music
+    if (idleMusicRef.current) {
+      const fadeOut = setInterval(() => {
+        if (idleMusicRef.current && idleMusicRef.current.volume > 0.05) {
+          idleMusicRef.current.volume -= 0.05;
+        } else {
+          if (idleMusicRef.current) {
+            idleMusicRef.current.pause();
+            idleMusicRef.current.currentTime = 0;
+          }
+          clearInterval(fadeOut);
+        }
+      }, 100);
+    }
+
     if (bloomMusicRef.current) {
       bloomMusicRef.current.volume = 0;
       bloomMusicRef.current.play();
@@ -117,11 +166,20 @@ function App() {
 
   return (
     <div className={`app phase-${phase}`} onClick={handleGlobalClick}>
-      <audio ref={idleMusicRef} loop>
-        <source src="/audio/idle.mp3" type="audio/mpeg" />
+      <audio
+        ref={idleMusicRef}
+        loop
+        preload="auto"
+        src={`${import.meta.env.BASE_URL}/audio/idle.mp3`.replace(/\/+/g, '/')}
+      >
+        <source src={`${import.meta.env.BASE_URL}/audio/idle.mp3`.replace(/\/+/g, '/')} type="audio/mpeg" />
       </audio>
-      <audio ref={bloomMusicRef}>
-        <source src="/audio/bloom.mp3" type="audio/mpeg" />
+      <audio
+        ref={bloomMusicRef}
+        preload="auto"
+        src={`${import.meta.env.BASE_URL}/audio/bloom.mp3`.replace(/\/+/g, '/')}
+      >
+        <source src={`${import.meta.env.BASE_URL}/audio/bloom.mp3`.replace(/\/+/g, '/')} type="audio/mpeg" />
       </audio>
 
       <div className="night"></div>
@@ -321,7 +379,7 @@ function App() {
           </div>
 
           <div className="valentine-ask-message">
-            <h1 className="message-text">Will you be my valentine?</h1>
+            <h1 className="message-text">May, will you be my valentine?</h1>
           </div>
         </div>
       )}

@@ -6,6 +6,8 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 :root {
@@ -795,6 +797,7 @@
   border-top-left-radius: 100%;
   border-left: 2vmin solid #3d6622;
   -webkit-mask-image: linear-gradient(to top, transparent 25%, #3d6622 50%);
+  mask-image: linear-gradient(to top, transparent 25%, #3d6622 50%);
   position: relative;
   z-index: 1;
 }
@@ -810,6 +813,7 @@
   background-image: linear-gradient(to bottom left, transparent, var(--dark-color) 98%),
     linear-gradient(to bottom right, #5a9c3c 45%, transparent 50%, transparent);
   -webkit-mask-image: linear-gradient(135deg, #4a7c2c 40%, transparent 50%, transparent);
+  mask-image: linear-gradient(135deg, #4a7c2c 40%, transparent 50%, transparent);
 }
 
 .flower__g-fr__leaf--1 {
@@ -881,6 +885,7 @@
 
 .long-g--1 .leaf {
   -webkit-mask-image: linear-gradient(to top, transparent 40%, #3d6622 80%) !important;
+  mask-image: linear-gradient(to top, transparent 40%, #3d6622 80%) !important;
 }
 
 .long-g--1 .leaf--1 {
@@ -901,6 +906,7 @@
 .long-g--2 .leaf,
 .long-g--3 .leaf {
   -webkit-mask-image: linear-gradient(to top, transparent 50%, #3d6622 80%) !important;
+  mask-image: linear-gradient(to top, transparent 50%, #3d6622 80%) !important;
 }
 
 .long-g--2 .leaf--1,
@@ -916,6 +922,7 @@
 
 .long-g--3 .leaf {
   -webkit-mask-image: linear-gradient(to top, transparent 40%, #3d6622 80%) !important;
+  mask-image: linear-gradient(to top, transparent 40%, #3d6622 80%) !important;
 }
 
 .long-g--4 {
@@ -927,6 +934,7 @@
 
 .long-g--4 .leaf {
   -webkit-mask-image: linear-gradient(to top, transparent 50%, #3d6622 80%) !important;
+  mask-image: linear-gradient(to top, transparent 50%, #3d6622 80%) !important;
 }
 
 .long-g--5 {
@@ -963,6 +971,7 @@
   border-top-left-radius: 100%;
   border-left: 2vmin solid var(--c);
   -webkit-mask-image: linear-gradient(to top, transparent 20%, var(--dark-color));
+  mask-image: linear-gradient(to top, transparent 20%, var(--dark-color));
   transform-origin: bottom center;
 }
 
@@ -1536,11 +1545,11 @@
   max-height: 0;
   margin-bottom: 0;
   overflow: hidden;
-  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .thought-line.visible {
-  /* Slower entry for the new line */
+  /* Faster entry for the new line */
   animation: poeticFadeIn 4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
@@ -1549,7 +1558,7 @@
   filter: blur(2.5px);
   transform: scale(0.94) translateY(-8px);
   margin-bottom: 1.5rem;
-  /* Slower movement for previous lines */
+  /* Faster movement for previous lines */
   transition: all 4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -1572,6 +1581,11 @@
   30% {
     max-height: 200px;
     margin-bottom: 2rem;
+  }
+
+  60% {
+    filter: blur(0);
+    opacity: 1;
   }
 
   100% {

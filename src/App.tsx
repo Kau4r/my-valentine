@@ -31,7 +31,6 @@ function App() {
   ];
 
   const handleGlobalClick = () => {
-    console.log('Global click. Unlocked:', audioUnlocked, 'Phase:', phase);
     if (!audioUnlocked) {
       [idleMusicRef, bloomMusicRef].forEach(ref => {
         if (ref.current) {
@@ -39,15 +38,11 @@ function App() {
           if (ref === idleMusicRef) ref.current.volume = 0.3;
           if (ref === bloomMusicRef) ref.current.volume = 0;
 
-          console.log(`Attempting to play: ${ref.current.currentSrc || ref.current.src}`);
           ref.current.play().then(() => {
-            console.log('Successfully played:', ref.current?.src);
             if (ref === bloomMusicRef || phase !== 'opening') {
               ref.current?.pause();
             }
-          }).catch(err => {
-            console.error('Play failed:', err);
-          });
+          }).catch(() => { });
         }
       });
       setAudioUnlocked(true);
@@ -78,6 +73,10 @@ function App() {
         setThoughtStep(prev => prev + 1);
       } else {
         setIsNavigating(true);
+        // Ensure audio is playing during transition to game
+        if (bloomMusicRef.current) {
+          bloomMusicRef.current.play().catch(() => { });
+        }
         setTimeout(() => {
           setPhase('game');
           setIsNavigating(false);
@@ -105,26 +104,11 @@ function App() {
   const startGardenSequence = () => {
     setStarted(true);
 
-    // Fade out idle music
-    if (idleMusicRef.current) {
-      const fadeOut = setInterval(() => {
-        if (idleMusicRef.current && idleMusicRef.current.volume > 0.05) {
-          idleMusicRef.current.volume -= 0.05;
-        } else {
-          if (idleMusicRef.current) {
-            idleMusicRef.current.pause();
-            idleMusicRef.current.currentTime = 0;
-          }
-          clearInterval(fadeOut);
-        }
-      }, 100);
-    }
-
     if (bloomMusicRef.current) {
       bloomMusicRef.current.volume = 0;
       bloomMusicRef.current.play();
       const fadeIn = setInterval(() => {
-        if (bloomMusicRef.current && bloomMusicRef.current.volume < 0.6) {
+        if (bloomMusicRef.current && bloomMusicRef.current.volume < 0.7) {
           bloomMusicRef.current.volume += 0.05;
         } else {
           clearInterval(fadeIn);
@@ -379,7 +363,7 @@ function App() {
           </div>
 
           <div className="valentine-ask-message">
-            <h1 className="message-text">May, will you be my valentine?</h1>
+            <h1 className="message-text">May, you be my valentine?</h1>
           </div>
         </div>
       )}

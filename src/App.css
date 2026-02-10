@@ -88,7 +88,7 @@
   height: 90vh;
   background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 1) 30%, transparent 100%);
   pointer-events: none;
-  z-index: 5;
+  z-index: 70;
 }
 
 .garden-glow {
@@ -104,7 +104,7 @@
       rgba(199, 56, 102, 0.2) 40%,
       transparent 70%);
   pointer-events: none;
-  z-index: 6;
+  z-index: 80;
   opacity: 0;
   animation: garden-glow-fade 2s 0.2s ease-out forwards;
   filter: blur(40px);
@@ -172,8 +172,8 @@
 .flowers {
   position: relative;
   transform: scale(0.9);
-  bottom: 12vh;
-  z-index: 10;
+  bottom: 10vmin;
+  z-index: 100;
 }
 
 .flower {
@@ -658,6 +658,7 @@
   border-left: 2vmin solid #3d6622;
   background-image: linear-gradient(to bottom, transparent, var(--dark-color) 60%);
   -webkit-mask-image: linear-gradient(to top, transparent 30%, #3d6622 60%);
+  mask-image: linear-gradient(to top, transparent 30%, #3d6622 60%);
 }
 
 .flower__g-right--1 {
@@ -1005,14 +1006,17 @@
 }
 
 /* Valentine Message */
-.valentine-message {
+.valentine-ask-message {
   position: fixed;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  z-index: 1000;
-  animation: fadeIn 2s ease-out;
+  z-index: 200;
+  animation: fadeIn 3s 7s ease-out forwards;
+  opacity: 0;
+  width: 100%;
+  pointer-events: none;
 }
 
 .message-text {
@@ -1021,7 +1025,6 @@
   font-weight: 800;
   color: hsl(329, 100%, 94%);
   text-shadow: 0 0 40px rgba(255, 107, 157, 0.8), 0 0 80px rgba(255, 107, 157, 0.4);
-  margin-bottom: 2rem;
   letter-spacing: 0.05em;
 }
 
@@ -1043,22 +1046,7 @@
   letter-spacing: 0.15em;
 }
 
-.start-hint {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1.5rem, 5vw, 2.5rem);
-  color: rgba(255, 179, 209, 0.9);
-  z-index: 999;
-  animation: breathe 3s ease-in-out infinite;
-  letter-spacing: 0.15em;
-  text-shadow:
-    0 0 20px rgba(255, 105, 180, 0.6),
-    0 0 40px rgba(138, 43, 226, 0.4);
-  pointer-events: none;
-}
+/* Initial sequence removed as per user request. Flower game is now the entry point. */
 
 /* Keyframes */
 @keyframes fadeIn {
@@ -1070,6 +1058,28 @@
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes simpleFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gameFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -1442,7 +1452,7 @@
 
 @media (max-width: 768px) {
   .flowers {
-    transform: scale(0.7);
+    transform: scale(1);
   }
 
   .message-text {
@@ -1486,4 +1496,286 @@
     opacity: 0.9;
     transform: scale(1.6) translateY(-5px) rotate(10deg);
   }
+}
+
+/* Refined Narrative Styles */
+.narrative-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20000;
+  text-align: center;
+  padding: 3rem;
+  background: transparent;
+  transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.narrative-container.hidden {
+  opacity: 0;
+  filter: blur(15px);
+  transform: scale(0.95);
+  pointer-events: none;
+}
+
+.poetic-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: #fff;
+  line-height: 1.6;
+  max-width: 800px;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.thought-line {
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(8px);
+  max-height: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.thought-line.visible {
+  /* Slower entry for the new line */
+  animation: poeticFadeIn 4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.thought-line:not(:last-child) {
+  opacity: 0.25;
+  filter: blur(2.5px);
+  transform: scale(0.94) translateY(-8px);
+  margin-bottom: 1.5rem;
+  /* Slower movement for previous lines */
+  transition: all 4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.poetic-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 1s ease-in-out;
+}
+
+@keyframes poeticFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    filter: blur(15px);
+    max-height: 0;
+    margin-bottom: 0;
+  }
+
+  30% {
+    max-height: 200px;
+    margin-bottom: 2rem;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+    max-height: 200px;
+    margin-bottom: 2rem;
+  }
+}
+
+.click-hint {
+  position: fixed;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Playfair Display', serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  animation: breathe 3s infinite;
+}
+
+.cloud-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  pointer-events: none;
+  background: white;
+  opacity: 0;
+  animation: white-flash 3s ease-in-out forwards;
+}
+
+@keyframes white-flash {
+  0% {
+    opacity: 0;
+  }
+
+  45%,
+  55% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.transition-cloud {
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  background: #fff;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0;
+  transform: scale(0);
+  animation: cloud-climax 3s ease-in-out forwards;
+}
+
+@keyframes cloud-climax {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  45%,
+  55% {
+    opacity: 1;
+    transform: scale(4);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(10);
+  }
+}
+
+
+/* Game Phase */
+.app.phase-game {
+  align-items: center;
+  justify-content: center;
+  perspective: none;
+  /* Remove perspective to fix position: fixed behavior */
+}
+
+.game-container {
+  position: fixed;
+  inset: 0;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  gap: 8vh;
+  background: transparent;
+  /* Smooth reveal of the petal game */
+  animation: gameFadeIn 2s ease-out forwards;
+}
+
+@keyframes gameFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+.game-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 800;
+  color: hsl(329, 100%, 94%);
+  text-shadow: 0 0 40px rgba(255, 107, 157, 0.8), 0 0 80px rgba(255, 107, 157, 0.4);
+  text-align: center;
+  z-index: 100;
+  transition: all 1s ease-out;
+}
+
+.game-text.final {
+  animation: game-text-final 1.5s infinite alternate;
+  color: #fff;
+  text-shadow: 0 0 30px #ff1493, 0 0 60px #ff69b4;
+}
+
+@keyframes game-text-final {
+  from {
+    transform: scale(1);
+    text-shadow: 0 0 30px #ff1493, 0 0 60px #ff69b4;
+  }
+
+  to {
+    transform: scale(1.1);
+    text-shadow: 0 0 50px #ff1493, 0 0 100px #ff69b4;
+  }
+}
+
+.daisy {
+  position: relative;
+  width: 50vmin;
+  height: 50vmin;
+}
+
+.daisy-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9vmin;
+  height: 9vmin;
+  background: radial-gradient(circle at 30% 30%, var(--rose-light), var(--rose-pink) 60%, var(--rose-dark));
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  box-shadow:
+    0 0 50px rgba(90, 0, 30, 0.8),
+    inset 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.daisy-petal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18vmin;
+  height: 35vmin;
+  background: linear-gradient(to top, #ff334b, var(--rose-pink));
+  border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%;
+  transform-origin: center center;
+  /* Changed from 80% */
+  transform: translate(-50%, -50%) rotate(calc(var(--i) * (360deg / var(--total)))) translateY(-18vmin);
+  cursor: pointer;
+  transition: all 0.8s cubic-bezier(0.5, 0, 0.5, 1);
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.4);
+  opacity: 0.95;
+}
+
+.daisy-petal.removed {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(calc(var(--i) * (360deg / var(--total)) + 45deg)) translateY(100vh) scale(0.5);
+}
+
+.garden-phase {
+  position: fixed;
+  inset: 0;
+  display: flex !important;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+  perspective: 1000px;
+}
+
+.phase-ask .message-text,
+.phase-resolution .message-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  color: #fff;
+  text-shadow: 0 0 30px rgba(255, 107, 157, 0.8), 0 0 60px rgba(255, 107, 157, 0.4);
+  margin-bottom: 2rem;
 }
